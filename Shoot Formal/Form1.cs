@@ -1,4 +1,8 @@
-﻿using System;
+﻿//created by Dylon Lemus
+//April 2016
+// Description: Classic looking pong game that allows you to play multiplayer or single player. In single player you can play with different difficulties.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Threading;
+using System.Media;
 
 namespace WindowsFormsApplication1
 {
@@ -19,6 +24,7 @@ namespace WindowsFormsApplication1
             InitializeComponent();
             TopMost = true;
             main = true;
+            //hides all images
             one.Hide();
             one2.Hide();
             two.Hide();
@@ -40,8 +46,13 @@ namespace WindowsFormsApplication1
             time2.Hide();
             time3.Hide();
             quit.Hide();
+            win.Hide();
+            lose.Hide();
+            //sets location of everything according to form size
+            win.Location = new Point(this.Width / 2 - win.Width / 2, this.Height / 2 - win.Height / 2);
+            lose.Location = new Point(this.Width / 2 - lose.Width / 2, this.Height / 2 - lose.Height / 2);
             quit.Location = new Point(this.Width / 2 - quit.Width / 2, this.Height - quit.Height * 3);
-            pause1.Location = new Point(this.Width/2 - pause1.Width / 2, this.Height/2 - pause1.Height / 2);
+            pause1.Location = new Point(this.Width / 2 - pause1.Width / 2, this.Height / 2 - pause1.Height / 2);
             paddle1.Location = new Point(15, this.Height / 2 - paddle1.Height / 2);
             paddle2.Location = new Point(this.Width - paddle2.Width - 15, this.Height / 2 - paddle2.Height / 2);
             ball.Location = new Point(this.Width / 2 - ball.Width / 2, this.Height / 2 - ball.Height / 2);
@@ -66,45 +77,60 @@ namespace WindowsFormsApplication1
             three2.Location = new Point(this.Width / 4 - three2.Width / 2, 66);
             four2.Location = new Point(this.Width / 4 - four2.Width / 2, 66);
             five2.Location = new Point(this.Width / 4 - five2.Width / 2, 66);
+
+            Form bg = new Form();
+            bg.BackColor = Color.White;
+            bg.FormBorderStyle = FormBorderStyle.None;
+            bg.WindowState = FormWindowState.Maximized;
+
+            bg.Show();
+            this.BringToFront();
         }
-        bool main,levels,pause = false;
-        bool upc, downc = false;
-        bool upc2, downc2 = false;
-        bool canUp, canDown, bcanUp, bcanDown = false;
-        bool Stwo, Sone, Sthree, Sfour, Sfive = false;
-        bool Stwo2, Sone2, Sthree2, Sfour2, Sfive2 = false;
-        bool start = false;
+        bool main, levels, pause = false;
+        bool upc, downc = false;//paddle1 movements
+        bool upc2, downc2 = false;//paddle 2 movements
+        bool canUp, canDown, bcanUp, bcanDown = false;//ball movements
+        bool Stwo, Sone, Sthree, Sfour, Sfive = false;//score for player 1
+        bool Stwo2, Sone2, Sthree2, Sfour2, Sfive2 = false;//score for player 2
         bool twoPlayers = false;
         bool easyLevel, mediumLevel, hardLevel = false;
-        bool restart = false;
-        int add;
+        bool restart, start, play = false;
+
         Random randNum = new Random();
-        int angleX, angleY;
+
+        int angleX, angleY;//random angle for ball
+        int add;
+        //variables for location of paddles and ball
         int x, y;
         int x1, y1;
         int x2, y2;
+        //sound used
+        SoundPlayer score = new SoundPlayer(Properties.Resources.score);
+        SoundPlayer wallHit = new SoundPlayer(Properties.Resources.wallHit);
+        SoundPlayer paddleHit = new SoundPlayer(Properties.Resources.paddleHit);
+
         private void Form1_KeyDown_1(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
-                if (main == true)
+                if (main == true)//if on main screen esc closes game
                 {
                     this.Close();
                 }
-                else if (pause == false)
+                else if (pause == false)//if not on main screen it pauses the game
                 {
                     pause1.Show();
                     pause = true;
                     quit.Show();
                 }
-                else
+                else//if already paused it unpauses game
                 {
                     quit.Hide();
                     pause1.Hide();
                     pause = false;
                 }
             }
-           
+            //key pressed for paddles
             if (e.KeyCode == Keys.Up)
             {
                 upc = true;
@@ -121,42 +147,50 @@ namespace WindowsFormsApplication1
             {
                 downc2 = true;
             }
+            //game restarts
             if (restart == true)
             {
                 winner2.Location = new Point(2000, 1000);
                 winner1.Location = new Point(2000, 1000);
-                ball.Location = new Point(this.Width / 2 - ball.Width / 2 -6, this.Height / 2 - ball.Height / 2 +15);
-                    paddle2.Location = new Point(this.Width - paddle2.Width - 15, this.Height / 2 - paddle2.Height / 2);
-                    paddle1.Location = new Point(15, this.Height / 2 - paddle1.Height / 2);
-                    Sfive = false;
-                    Sfive2 = false;
-                    Sfour = false;
-                    Sfour2 = false;
-                    Sthree = false;
-                    Sthree2 = false;
-                    Stwo = false;
-                    Stwo2 = false;
-                    Sone = false;
-                    Sone2 = false;
-                    onePlayer.Show();
-                    twoPlayer.Show();
-                    five.Hide();
-                    five2.Hide();
-                    one.Hide();
-                    one2.Hide();
-                    two.Hide();
-                    two2.Hide();
-                    three.Hide();
-                    three2.Hide();
-                    four.Hide();
-                    four2.Hide();
-                    winner1.Hide();
-                    winner2.Hide();
-                    winner1.Location = new Point(this.Width / 4 - winner1.Width / 2, this.Height / 2 - winner1.Height / 2);
-                    winner2.Location = new Point(this.Width / 4 * 3 - winner2.Width / 2, this.Height / 2 - winner2.Height / 2);
-                    restart = false;
-                    start = false;
-                    main = true;
+                ball.Location = new Point(this.Width / 2 - ball.Width / 2, this.Height / 2 - ball.Height / 2);
+                paddle2.Location = new Point(this.Width - paddle2.Width - 27, this.Height / 2 - paddle2.Height / 2);
+                paddle1.Location = new Point(15, this.Height / 2 - paddle1.Height / 2);
+                //score goes back to 0
+                Sfive = false;
+                Sfive2 = false;
+                Sfour = false;
+                Sfour2 = false;
+                Sthree = false;
+                Sthree2 = false;
+                Stwo = false;
+                Stwo2 = false;
+                Sone = false;
+                Sone2 = false;
+                //lets you choose 2 or 1 player again
+                onePlayer.Show();
+                twoPlayer.Show();
+                //hides all pictures so game can be restarted
+                win.Hide();
+                lose.Hide();
+                five.Hide();
+                five2.Hide();
+                one.Hide();
+                one2.Hide();
+                two.Hide();
+                two2.Hide();
+                three.Hide();
+                three2.Hide();
+                four.Hide();
+                four2.Hide();
+                winner1.Hide();
+                winner2.Hide();
+                winner1.Location = new Point(this.Width / 4 - winner1.Width / 2, this.Height / 2 - winner1.Height / 2);
+                winner2.Location = new Point(this.Width / 4 * 3 - winner2.Width / 2, this.Height / 2 - winner2.Height / 2);
+                //can't be restarted again
+                restart = false;
+                start = false;
+                //esc key can be used to exit
+                main = true;
             }
             if (pause == true)
             {
@@ -194,8 +228,8 @@ namespace WindowsFormsApplication1
                     levels = false;
                 }
             }
-                if(levels ==true)
-            { 
+            if (levels == true)
+            {
                 //easy mode
                 if (e.KeyCode == Keys.N)
                 {
@@ -227,109 +261,116 @@ namespace WindowsFormsApplication1
                     start = true;
                 }
             }
-            if (start == true)
+            if (pause == false)
             {
-                add = 0;
-                angleX = randNum.Next(10, 17);
-                angleY = randNum.Next(10, 17);
-                label1.Text = "";
-                paddle2.Location = new Point(this.Width - paddle2.Width - 25, this.Height / 2 - paddle2.Height / 2);
-                paddle1.Location = new Point(15, this.Height / 2 - paddle1.Height / 2);
-                //countdown for game start
-                for (int i = 1; i <= 4; i++)
+                if (start == true)
                 {
-                    Refresh();
-                    Thread.Sleep(800);
-                    ball.Location = new Point(this.Width / 2 - ball.Width / 2, this.Height / 2 - ball.Height / 2);
-                    if (i == 1)
+                    //increase goes back to 0
+                    add = 0;
+                    //angles are randomized
+                    angleX = randNum.Next(10, 17);
+                    angleY = randNum.Next(10, 17);
+                    //paddles are placed back to original spots
+                    paddle2.Location = new Point(this.Width - paddle2.Width - 15, this.Height / 2 - paddle2.Height / 2);
+                    paddle1.Location = new Point(15, this.Height / 2 - paddle1.Height / 2);
+                    ball.Location = new Point(this.Width / 2 - ball.Width / 2, this.Height / 2 - ball.Height / 2);//ball is moved to the center
+                    //countdown for game start
+                    for (int i = 1; i <= 4; i++)
                     {
-                        time3.Show();
+                        Refresh();
+                        Thread.Sleep(800);//pauses in between each countdown
+                        if (i == 1)
+                        {
+                            time3.Show();
+                        }
+                        if (i == 2)
+                        {
+                            time3.Hide();
+                            time2.Show();
+                        }
+                        if (i == 3)
+                        {
+                            time1.Show();
+                            time2.Hide();
+                        }
+                        if (i == 4)
+                        {
+                            time1.Hide();
+                        }
                     }
-                    if (i == 2)
+                    //Score
+                    if (Sone == true && Stwo != true && Sthree != true && Sfour != true)
                     {
-                        time2.Show();
-                        time3.Hide();
+                        Stwo = true;
                     }
-                    if (i == 3)
+                    if (Sone2 == true && Stwo2 != true && Sthree2 != true && Sfour2 != true)
                     {
-                        time2.Hide();
-                        time1.Show();
+                        Stwo2 = true;
                     }
-                    if (i == 4)
+                    if (Stwo == true && Sone != true)
                     {
-                        time1.Hide();
+                        Sthree = true;
                     }
+                    if (Stwo2 == true && Sone2 != true)
+                    {
+                        Sthree2 = true;
+                    }
+                    if (Sthree == true && Stwo != true)
+                    {
+                        Sfour = true;
+                    }
+                    if (Sthree2 == true && Stwo2 != true)
+                    {
+                        Sfour2 = true;
+                    }
+                    if (Sfour == true && Sthree != true)
+                    {
+                        Sfive = true;
+                    }
+                    if (Sfour2 == true && Sthree2 != true)
+                    {
+                        Sfive2 = true;
+                    }
+                    //picks a random side for ball to go
+                    if (angleX == 10 || angleX == 14)
+                    {
+                        canUp = true;
+                        canDown = false;
+                        bcanUp = false;
+                        bcanDown = false;
+                    }
+                    if (angleX == 11 || angleX == 15)
+                    {
+                        canDown = true;
+                        canUp = false;
+                        bcanUp = false;
+                        bcanDown = false;
+                    }
+                    if (angleX == 12 || angleX == 16)
+                    {
+                        bcanUp = true;
+                        canDown = false;
+                        canUp = false;
+                        bcanDown = false;
+                    }
+                    if (angleX == 13 || angleX == 17)
+                    {
+                        bcanDown = true;
+                        canDown = false;
+                        bcanUp = false;
+                        canUp = false;
+                    }
+                    start = false;
+                    //scoring sound can be heard again
+                    play = true;
                 }
-                //Score
-                if (Sone == true && Stwo != true && Sthree != true && Sfour != true)
-                {
-                    Stwo = true;
-                }
-                if (Sone2 == true && Stwo2 != true && Sthree2 != true && Sfour2 != true)
-                {
-                    Stwo2 = true;
-                }
-                if (Stwo == true && Sone != true)
-                {
-                    Sthree = true;
-                }
-                if (Stwo2 == true && Sone2 != true)
-                {
-                    Sthree2 = true;
-                }
-                if (Sthree == true && Stwo != true)
-                {
-                    Sfour = true;
-                }
-                if (Sthree2 == true && Stwo2 != true)
-                {
-                    Sfour2 = true;
-                }
-                if (Sfour == true && Sthree != true)
-                {
-                    Sfive = true;
-                }
-                if (Sfour2 == true && Sthree2 != true)
-                {
-                    Sfive2 = true;
-                }
-                if (angleX == 10 || angleX == 14)
-                {
-                    canUp = true;
-                    canDown = false;
-                    bcanUp = false;
-                    bcanDown = false;
-                }
-                if (angleX == 11 || angleX == 15)
-                {
-                    canDown = true;
-                    canUp = false;
-                    bcanUp = false;
-                    bcanDown = false;
-                }
-                if (angleX == 12 || angleX == 16)
-                {
-                    bcanUp = true;
-                    canDown = false;
-                    canUp = false;
-                    bcanDown = false;
-                }
-                if (angleX == 13 || angleX == 17)
-                {
-                    bcanDown = true;
-                    canDown = false;
-                    bcanUp = false;
-                    canUp = false;
-                }
-                start = false;
             }
-
         }
 
 
         private void Form1_KeyUp_1(object sender, KeyEventArgs e)
         {
-            
+            //key is released
             if (e.KeyCode == Keys.Up)
             {
                 upc = false;
@@ -350,6 +391,7 @@ namespace WindowsFormsApplication1
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //variables for location of paddles and ball
             x = paddle1.Location.X;
             y = paddle1.Location.Y;
             x2 = paddle2.Location.X;
@@ -358,7 +400,7 @@ namespace WindowsFormsApplication1
             y1 = ball.Location.Y;
             if (pause == false)
             {
-                //paddle movements
+                //paddle1 movements
                 if (upc == true)
                 {
                     y -= 15;
@@ -367,7 +409,7 @@ namespace WindowsFormsApplication1
                 {
                     y += 15;
                 }
-                //second player movement
+                //paddle2 movements
                 if (twoPlayers == true)
                 {
                     if (upc2 == true)
@@ -382,7 +424,7 @@ namespace WindowsFormsApplication1
                 //computer controlled
                 else
                 {
-                    if (easyLevel == true)
+                    if (easyLevel == true)//moves slower
                     {
                         if (y2 < y1 - 40)
                         {
@@ -404,30 +446,32 @@ namespace WindowsFormsApplication1
                             y2 -= 22;
                         }
                     }
-                    if (hardLevel == true)
+                    if (hardLevel == true)//moves very fast
                     {
                         if (y2 < y1 - 40)
                         {
-                            y2 += 33;
+                            y2 += 35;
                         }
                         if (y2 > y1 - 40)
                         {
-                            y2 -= 33;
+                            y2 -= 35;
                         }
                     }
                 }
                 //ball movements
+                //wallhits
                 if (canUp == true)
                 {
-                    if (y1 > 0)
+                    if (y1 > 0)//ball moves up and right
                     {
-                        x1 += angleX + add;
+                        x1 += angleX + add;//speed increases each time it hits side
                         y1 -= angleY + add;
-                        if (y1 <= 0)
+                        if (y1 <= 0)//hits bottom wall
                         {
+                            wallHit.Play();//sound
                             canUp = false;
                             canDown = true;
-                            if (hardLevel == true)
+                            if (hardLevel == true)//angle changes each time it hits side
                             {
                                 angleX = randNum.Next(16, 20);
                                 angleY = randNum.Next(16, 20);
@@ -437,12 +481,13 @@ namespace WindowsFormsApplication1
                 }
                 if (canDown == true)
                 {
-                    if (y1 < this.Height - ball.Height)
+                    if (y1 < this.Height - ball.Height)//ball moves down and right
                     {
                         x1 += angleX + add;
                         y1 += angleY + add;
                         if (y1 >= this.Height - ball.Height)
                         {
+                            wallHit.Play();//sound
                             canDown = false;
                             canUp = true;
                             if (hardLevel == true)
@@ -455,12 +500,13 @@ namespace WindowsFormsApplication1
                 }
                 if (bcanUp == true)
                 {
-                    if (y1 > 0)
+                    if (y1 > 0)//ball moves up and left
                     {
                         x1 -= angleX + add;
                         y1 -= angleY + add;
                         if (y1 <= 0)
                         {
+                            wallHit.Play();//sound
                             bcanUp = false;
                             bcanDown = true;
                             if (hardLevel == true)
@@ -473,12 +519,13 @@ namespace WindowsFormsApplication1
                 }
                 if (bcanDown == true)
                 {
-                    if (y1 < this.Height - ball.Height)
+                    if (y1 < this.Height - ball.Height)//moves down and left
                     {
                         x1 -= angleX + add;
                         y1 += angleY + add;
                         if (y1 >= this.Height - ball.Height)
                         {
+                            wallHit.Play();//sound
                             bcanDown = false;
                             bcanUp = true;
                             if (hardLevel == true)
@@ -489,44 +536,42 @@ namespace WindowsFormsApplication1
                         }
                     }
                 }
-                label1.Text = Convert.ToString(angleX);
-                label1.Text += Convert.ToString(angleY);
-                label1.Text += Convert.ToString(add);
                 //making contact with paddle2
-                if (x1 <= x2 + 20 && x1 >= x2 - 33 && y1 >= y2-2 && y1 <= y2 + 111)
+                if (x1 <= x2 + 20 && x1 >= x2 - 33 && y1 >= y2 - 2 && y1 <= y2 + 111)
                 {
+                    paddleHit.Play();//sound
                     if (twoPlayers == true)
                     {
-                        add += 3;
+                        add += 3;//speed increases when it hits paddle
                     }
                     if (easyLevel == true)
                     {
-                        add += 1;
+                        add += 1;//small increase
                     }
                     if (mediumLevel == true)
                     {
-                        add += 3;
+                        add += 3;//medium increase
                     }
                     if (hardLevel == true)
                     {
-                        add += 4;
+                        add += 4;//high increase
                     }
+                    //moves left
                     if (canUp == true)
                     {
-                        label1.Text = "UP";
                         bcanUp = true;
                     }
                     if (canDown == true)
                     {
-                        label1.Text = "DOWN";
                         bcanDown = true;
                     }
                     canDown = false;
                     canUp = false;
                 }
                 //making contact with paddle1
-                if (x1 >= x - 20 && x1 <= x + 33 && y1 >= y-2 && y1 <= y + 111)
+                if (x1 >= x - 20 && x1 <= x + 33 && y1 >= y - 2 && y1 <= y + 111)
                 {
+                    paddleHit.Play();//sound
                     if (twoPlayers == true)
                     {
                         add += 3;
@@ -543,14 +588,13 @@ namespace WindowsFormsApplication1
                     {
                         add += 4;
                     }
+                    //moves right
                     if (bcanUp == true)
                     {
-                        label1.Text = "UP";
                         canUp = true;
                     }
                     if (bcanDown == true)
                     {
-                        label1.Text = "DOWN";
                         canDown = true;
                     }
                     bcanDown = false;
@@ -574,153 +618,134 @@ namespace WindowsFormsApplication1
                 {
                     y2 = this.Height - paddle2.Height;
                 }
+                //play scoring sound
+                if (play == true)
+                {
+                    if (x1 - 20 > this.Width)
+                    {
+                        score.PlaySync();
+                        play = false;
+                    }
+                }
+                if (play == true)
+                {
+                    if (x1 < -45)
+                    {
+                        score.PlaySync();
+                        play = false;
+                    }
+                }
                 //scoring
-                if (x1 > this.Width)
+                if (x1 - 20 > this.Width)
                 {
                     start = true;
-                    one2.Show();
+                    one2.Show();//score 1
                     Sone = true;
                     canDown = false;
                     canUp = false;
                     bcanDown = false;
                     bcanUp = false;
                 }
-                if (x1 < -20)
+                if (x1 < -45)
                 {
                     start = true;
-                    one.Show();
+                    one.Show();//score 1
                     Sone2 = true;
                     canDown = false;
                     canUp = false;
                     bcanDown = false;
                     bcanUp = false;
                 }
-                if (x1 > this.Width && Stwo == true)
+                if (x1 - 20 > this.Width && Stwo == true)
                 {
                     start = true;
-                    two2.Show();
+                    two2.Show();//score 2
                     one2.Hide();
                     Sone = false;
                 }
-                if (x1 < -20 && Stwo2 == true)
+                if (x1 < -45 && Stwo2 == true)
                 {
                     start = true;
-                    two.Show();
+                    two.Show();//score 2
                     one.Hide();
                     Sone2 = false;
 
                 }
-                if (x1 > this.Width && Sthree == true)
+                if (x1 - 20 > this.Width && Sthree == true)
                 {
                     start = true;
-                    three2.Show();
+                    three2.Show();//score 3
                     two2.Hide();
                     one2.Hide();
                     Stwo = false;
                 }
-                if (x1 < -20 && Sthree2 == true)
+                if (x1 < -45 && Sthree2 == true)
                 {
                     start = true;
-                    three.Show();
+                    three.Show();// score 3
                     two.Hide();
                     one.Hide();
                     Stwo2 = false;
                 }
-                if (x1 > this.Width && Sfour == true)
+                if (x1 - 20 > this.Width && Sfour == true)
                 {
                     start = true;
-                    three2.Hide();
+                    three2.Hide();//score 4
                     four2.Show();
                     one2.Hide();
                     Sthree = false;
                 }
-                if (x1 < -20 && Sfour2 == true)
+                if (x1 < -45 && Sfour2 == true)
                 {
                     start = true;
-                    four.Show();
+                    four.Show();//score 4
                     three.Hide();
                     one.Hide();
                     Sthree2 = false;
                 }
-                if (x1 > this.Width && Sfive == true)
+                if (x1 - 20 > this.Width && Sfive == true)
                 {
                     start = false;
                     four2.Hide();
-                    five2.Show();
+                    five2.Show();//score 5
                     one2.Hide();
                     Sfour = false;
-                    winner1.Show();
+                    if (twoPlayers == true)//if playing 2 player
+                    {
+                        winner1.Show();
+                    }
+                    else
+                    {
+                        win.Show();
+                    }
                     Refresh();
                     Thread.Sleep(2000);
-                    restart = true;
+                    restart = true;//game can be restarted
                 }
-                if (x1 < -20 && Sfive2 == true)
+                if (x1 < -45 && Sfive2 == true)
                 {
                     start = false;
-                    five.Show();
+                    five.Show();//score 5
                     four.Hide();
                     one.Hide();
+                    if (twoPlayers == true)
+                    {
+                        winner2.Show();
+                    }
+                    else
+                    {
+                        lose.Show();
+                    }
                     Sfour2 = false;
-                    winner2.Show();
                     Refresh();
                     Thread.Sleep(2000);
                     restart = true;
                 }
             }
+            //location of paddles and ball using variables created
             ball.Location = new Point(x1, y1);
             paddle1.Location = new Point(x, y);
             paddle2.Location = new Point(x2, y2);
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            onePlayer.Hide();
-            twoPlayer.Hide();
-            easy.Show();
-            medium.Show();
-            hard.Show();
-        }
-
-        private void twoPlayer_Click(object sender, EventArgs e)
-        {
-            twoPlayers = true;
-            onePlayer.Hide();
-            twoPlayer.Hide();
-            start = true;
-            easyLevel = false;
-            mediumLevel = false;
-            hardLevel = false;
-        }
-
-        private void easy_Click(object sender, EventArgs e)
-        {
-            twoPlayers = false;
-            start = true;
-            easyLevel = true;
-            easy.Hide();
-            medium.Hide();
-            hard.Hide();
-        }
-
-        private void medium_Click(object sender, EventArgs e)
-        {
-            twoPlayers = false;
-            mediumLevel = true;
-            easy.Hide();
-            medium.Hide();
-            hard.Hide();
-            start = true;
-        }
-
-        private void hard_Click(object sender, EventArgs e)
-        {
-            twoPlayers = false;
-            hardLevel = true;
-            easy.Hide();
-            medium.Hide();
-            hard.Hide();
-            start = true;
         }
     }
 }

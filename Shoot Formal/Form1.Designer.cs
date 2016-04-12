@@ -33,7 +33,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.paddle1 = new System.Windows.Forms.PictureBox();
             this.ball = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.paddle2 = new System.Windows.Forms.PictureBox();
             this.one2 = new System.Windows.Forms.PictureBox();
             this.line = new System.Windows.Forms.PictureBox();
@@ -60,6 +59,8 @@
             this.pageSetupDialog1 = new System.Windows.Forms.PageSetupDialog();
             this.quit = new System.Windows.Forms.PictureBox();
             this.pause1 = new System.Windows.Forms.PictureBox();
+            this.win = new System.Windows.Forms.PictureBox();
+            this.lose = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.paddle1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ball)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.paddle2)).BeginInit();
@@ -87,6 +88,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.time3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.quit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pause1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.win)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lose)).BeginInit();
             this.SuspendLayout();
             // 
             // timer1
@@ -112,16 +115,6 @@
             this.ball.Size = new System.Drawing.Size(18, 18);
             this.ball.TabIndex = 1;
             this.ball.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(227, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
             // 
             // paddle2
             // 
@@ -253,7 +246,6 @@
             this.onePlayer.Size = new System.Drawing.Size(404, 103);
             this.onePlayer.TabIndex = 15;
             this.onePlayer.TabStop = false;
-            this.onePlayer.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // twoPlayer
             // 
@@ -265,7 +257,6 @@
             this.twoPlayer.Size = new System.Drawing.Size(404, 103);
             this.twoPlayer.TabIndex = 16;
             this.twoPlayer.TabStop = false;
-            this.twoPlayer.Click += new System.EventHandler(this.twoPlayer_Click);
             // 
             // playAgain
             // 
@@ -310,7 +301,6 @@
             this.easy.Size = new System.Drawing.Size(269, 87);
             this.easy.TabIndex = 20;
             this.easy.TabStop = false;
-            this.easy.Click += new System.EventHandler(this.easy_Click);
             // 
             // medium
             // 
@@ -322,7 +312,6 @@
             this.medium.Size = new System.Drawing.Size(395, 89);
             this.medium.TabIndex = 21;
             this.medium.TabStop = false;
-            this.medium.Click += new System.EventHandler(this.medium_Click);
             // 
             // hard
             // 
@@ -334,7 +323,6 @@
             this.hard.Size = new System.Drawing.Size(293, 96);
             this.hard.TabIndex = 22;
             this.hard.TabStop = false;
-            this.hard.Click += new System.EventHandler(this.hard_Click);
             // 
             // time1
             // 
@@ -388,12 +376,36 @@
             this.pause1.TabIndex = 27;
             this.pause1.TabStop = false;
             // 
+            // win
+            // 
+            this.win.BackColor = System.Drawing.Color.Transparent;
+            this.win.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("win.BackgroundImage")));
+            this.win.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.win.Location = new System.Drawing.Point(397, 345);
+            this.win.Name = "win";
+            this.win.Size = new System.Drawing.Size(404, 103);
+            this.win.TabIndex = 28;
+            this.win.TabStop = false;
+            // 
+            // lose
+            // 
+            this.lose.BackColor = System.Drawing.Color.Transparent;
+            this.lose.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("lose.BackgroundImage")));
+            this.lose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.lose.Location = new System.Drawing.Point(452, 384);
+            this.lose.Name = "lose";
+            this.lose.Size = new System.Drawing.Size(404, 103);
+            this.lose.TabIndex = 29;
+            this.lose.TabStop = false;
+            // 
             // Pong
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(1354, 733);
+            this.ClientSize = new System.Drawing.Size(1200, 770);
+            this.Controls.Add(this.lose);
+            this.Controls.Add(this.win);
             this.Controls.Add(this.pause1);
             this.Controls.Add(this.quit);
             this.Controls.Add(this.time3);
@@ -413,7 +425,6 @@
             this.Controls.Add(this.two2);
             this.Controls.Add(this.one);
             this.Controls.Add(this.paddle2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.paddle1);
             this.Controls.Add(this.one2);
             this.Controls.Add(this.hard);
@@ -422,7 +433,9 @@
             this.Controls.Add(this.winner2);
             this.Controls.Add(this.playAgain);
             this.Controls.Add(this.line);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Pong";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pong";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown_1);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp_1);
@@ -453,8 +466,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.time3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.quit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pause1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.win)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lose)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -463,7 +477,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox paddle1;
         private System.Windows.Forms.PictureBox ball;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox paddle2;
         private System.Windows.Forms.PictureBox one2;
         private System.Windows.Forms.PictureBox line;
@@ -490,6 +503,8 @@
         private System.Windows.Forms.PageSetupDialog pageSetupDialog1;
         private System.Windows.Forms.PictureBox quit;
         private System.Windows.Forms.PictureBox pause1;
+        private System.Windows.Forms.PictureBox win;
+        private System.Windows.Forms.PictureBox lose;
     }
 }
 
